@@ -1,0 +1,4 @@
+[server]
+port = 8583
+maxMessageSize = 600
+maxUploadSize = 600

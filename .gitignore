@@ -1,0 +1,10 @@
+model_d2v.pkl
+nohup.out
+dataframes.pickle
+dataset
+オープンキャンパス_レコメンドシステム_協調フィルタリング.ipynb
+# titles.txt
+# titles_途中.txt
+output_csv
+__pycache__
+.venv
