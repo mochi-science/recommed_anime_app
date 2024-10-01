@@ -7,18 +7,26 @@
 ```ディレクトリ構造
 .
 ├── app
-│   ├── anime_app.py  # アプリのメインファイル
-│   └── utils.py      # アプリのユーティリティ関数
+│   ├── anime_app.py          # アプリのメインファイル
+│   └── utils.py              # アプリのユーティリティ関数
+├── calc_sim_code
+│   ├── data_loader.py        # データの読み込みと整形
+│   ├── exploratory_analysis.py # 視聴方法別の探索的データ分析
+│   ├── recommendation_system.py # レコメンドシステムの構築とユーザー類似度計算
+│   ├── utils.py              # 補助的な関数群（ピクルファイルへの保存など）
+│   └── main.py               # 実行するとdataframes.pickleを出力
 ├── dataset
 │   ├── anime.csv             # アニメの情報データセット
-│   ├── combined_data.json    # 日本語訳データを統合したJSONファイル
+│   ├── combined_data.json    # 英語タイトルを日本語に変換したデータ
 │   ├── rating.csv            # ユーザーのアニメ評価データ
 │   └── 日本語訳リスト_個別     # 各アニメの日本語訳を格納したフォルダ
 ├── .gitignore
 ├── dataframes.pickle         # データフレームを保存したpickleファイル
 ├── nohup.out
-├── test.ipynb
-└── README.md
+├── pyproject.toml            # Poetryによる依存関係設定ファイル
+├── poetry.lock               # Poetryのロックファイル
+├── README.md
+└── recommend_anime.zip
 ```
 
 ## アプリケーションの説明
@@ -30,7 +38,6 @@
 このプロジェクトでは、myanimelist.netのデータを使用しており、76,000ユーザーのアニメレビューが含まれています。  
 使用しているデータセットは以下のKaggleからダウンロードしたオープンデータです。  
 [Kaggle: Anime Recommendations Database](https://www.kaggle.com/datasets/CooperUnion/anime-recommendations-database)
-
 
 - **anime.csv**:
   - アニメの情報を含むデータセット
@@ -55,33 +62,43 @@
 
 ## 必要なライブラリ
 
-このプロジェクトを実行するためには、以下のライブラリが必要です。
+このプロジェクトを実行するためには、[Poetry](https://python-poetry.org/) を使用して依存関係を管理しています。
 
-- Python 3.x
-- Streamlit
-- Pandas
-- Matplotlib
-- Scikit-learn
-- Scipy
-- Seaborn
-
-必要なパッケージをインストールするには、以下のコマンドを使用してください:
+Poetryをインストールしていない場合は、以下のコマンドでインストールしてください:
 
 ```sh
-pip install -r requirements.txt
+curl -sSL https://install.python-poetry.org | python3 -
 ```
+
+必要なパッケージをインストールするには、プロジェクトのルートディレクトリで以下のコマンドを実行してください:
+
+```sh
+poetry install
+```
+
+Poetryシェルに入って実行するか、各コマンドの前に `poetry run` を付けることで、プロジェクトを実行できます。
 
 ## 実行方法
 
 このアプリケーションを実行するには、Streamlitを使用します。
 
-1. ターミナルで以下のコマンドを実行してください:
+### アプリケーションの実行
+
+1. **calc_sim_codeディレクトリ内のモジュールの実行**  
+   データを読み込み、探索的分析を行い、レコメンドシステムを構築するために、`calc_sim_code/main.py`を実行します。この処理により`dataframes.pickle`ファイルが生成されます。
 
    ```sh
-   streamlit run app/anime_app.py
+   poetry run python calc_sim_code/main.py
    ```
 
-2. ウェブブラウザが開き、アニメおすすめアプリが表示されます。
+2. **アプリケーションの実行**  
+   次に、ターミナルで以下のコマンドを実行し、アニメおすすめアプリを起動します:
+
+   ```sh
+   poetry run streamlit run app/anime_app.py
+   ```
+
+3. ウェブブラウザが開き、アニメおすすめアプリが表示されます。
 
 ## 機能説明
 
@@ -97,11 +114,11 @@ pip install -r requirements.txt
 
 ## データフロー
 
-1. **データのロード**: 初期化時にデータフレームをpickleファイルから読み込みます。
-    - pickleファイルはcalc_sim_codeのmain.pyを実行して取得してください（とても容量が大きくなります）
-2. **アニメの絞り込み**: タイトルやジャンル、評価点に基づいてアニメをフィルタリングします。
-3. **ユーザー間の類似度計算**: コサイン類似度を使用してユーザー間の類似度を計算します。
-4. **レコメンド**: 類似ユーザーの情報を基に、対象ユーザーに対して新たなアニメをおすすめします。
+1. **データの読み込み** (`data_loader.py`): 初期化時にデータセットを読み込みます。
+2. **探索的分析** (`exploratory_analysis.py`): アニメの視聴方法別に探索的データ分析を行います。
+3. **レコメンドシステムの構築** (`recommendation_system.py`): ユーザー間の類似度計算を含むレコメンドシステムを構築します。
+4. **データの保存** (`utils.py`): データフレームをピクルファイルに保存し、`dataframes.pickle`として出力します。
+5. **アプリケーション実行** (`anime_app.py`): 保存されたデータを用いてStreamlitアプリを動かし、ユーザーにアニメをレコメンドします。
 
 ## 今後の課題
 

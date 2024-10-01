@@ -20,7 +20,7 @@ def main():
         'df_user_anime': df_user_anime,
         'df_sim': df_sim
     }
-    save_dataframes(dataframes, output_file="dataframes.pickle")
+    save_dataframes(dataframes, output_file="../dataframes.pickle")
 
 if __name__ == "__main__":
     main()
